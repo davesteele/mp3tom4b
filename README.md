@@ -13,6 +13,10 @@ The following are prerequisites:
 * The Python 3 mutagen module
 * MP4Box, from the 'gpac' package
 
+Install the last three with:
+
+    apt-get install ffmpeg python3-mutagen gpac
+
 ## Using
 
 The conversion is a three-step process. First run the script using the component MP3 files as arguments. This will create a JSON file containing metadata for creating the audiobook file.
