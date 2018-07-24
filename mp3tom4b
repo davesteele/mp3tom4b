@@ -73,13 +73,13 @@ class Book():
 
         aacList = [morph.Mp3ToAac(chap.mp3Path) for chap in self.chapterList]
 
-        morph.ConcatAac(outputFile, aacList, self.ChapterText())
+        morph.ConcatAac(outputFile, aacList, self._ChapterText())
 
         morph.SetTags(outputFile, self.title, self.author, self.year)
 
         morph.SetCover(outputFile, self.coverPath)
 
-    def ChapterText(self):
+    def _ChapterText(self):
         text = ""
         timeStamp = 0
 
