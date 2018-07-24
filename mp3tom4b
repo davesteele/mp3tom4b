@@ -33,7 +33,7 @@ class Book():
 
         self.chapterList = []
         for chapDict in jsonDict["chapters"]:
-            chapter = Chapter(mp3Path=chapDict['mp3Path'])
+            chapter = Chapter(chapDict['mp3Path'])
 
             if chapDict['title']:
                 chapter.title = chapDict['title']
@@ -45,7 +45,7 @@ class Book():
             setattr(self, tag, value)
 
     def AddChapterMp3(self, path):
-        chapter = Chapter(mp3Path=path)
+        chapter = Chapter(path)
         self.chapterList.append(chapter)
 
         self._SetAttrib('title', chapter.BookTitle())
@@ -103,9 +103,8 @@ class Book():
 
 
 class Chapter():
-    def __init__(self, **kwargs):
-        for tag in ['mp3Path']:
-            setattr(self, tag, "")
+    def __init__(self, mp3Path, **kwargs):
+        self.mp3Path = mp3Path
 
         for arg in kwargs:
             setattr(self, arg, kwargs[arg])
