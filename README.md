@@ -40,3 +40,23 @@ Finally, run the script with the JSON file as the sole argument. This will creat
 
     $ mp3tom4b *json
     audiobook saved to "James Herriot's Animal Stories.m4b"
+
+## Usage
+
+    $ mp3tom4b -h
+    usage: mp3tom4b [-h | <MP3 file> <MP3 file> [...] | <JSON file>]
+    
+    Convert mp3 audio files to an m4b audiobook
+    
+    optional arguments:
+      -h, --help  show this help message and exit
+    
+    When called with an argument list of mp3 files, mp3tom4b will
+    create a JSON file containing metadata for the collection.
+    
+    Edit the JSON file to refine meta information for the audiobook.
+    
+    When called with a single argument, mp3tom4b will interpret the
+    argument as a JSON metadata file, and will use it to create an
+    m4b audio file containing the mp3 file and metadata information.
+
