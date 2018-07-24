@@ -225,7 +225,7 @@ def parseArgs():
             argument as a JSON metadata file, and will use it to create an
             m4b audio file containing the mp3 file and metadata information.
             """)[1:-1],
-        usage="%(prog)s [-h] [<MP3 file> <MP3 file> [...] | <JSON file>]",
+        usage="%(prog)s [-h | <MP3 file> <MP3 file> [...] | <JSON file>]",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
