@@ -101,6 +101,12 @@ class Book():
 
         return text
 
+    def Title(self):
+        if self.title:
+            return self.title
+
+        return "book"
+
 
 class Chapter():
     def __init__(self, mp3Path, **kwargs):
@@ -265,13 +271,15 @@ def main():
         for file in args.mp3_files:
             book.AddChapterMp3(file)
 
-        with open("book.json", "w") as fp:
+        jname = book.Title() + ".json"
+
+        with open(jname, "w") as fp:
             fp.write(book.ToJson())
 
-        print("metadata saved to book.json")
+        print(f"metadata saved to {jname}")
 
     elif args.json_file:
-        book = Book("book.json")
+        book = Book(args.json)
 
         book.Convert()
 
