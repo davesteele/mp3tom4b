@@ -63,7 +63,7 @@ class Book():
 
         return json.dumps(outDict, indent=2)
 
-    def Convert(self, outputFile="book.m4b"):
+    def Convert(self, outputFile):
         try:
             os.remove(outputFile)
         except OSError:
@@ -276,14 +276,15 @@ def main():
         with open(jname, "w") as fp:
             fp.write(book.ToJson())
 
-        print(f"metadata saved to {jname}")
+        print(f"metadata saved to \"{jname}\"")
 
     elif args.json_file:
         book = Book(args.json)
 
-        book.Convert()
+        bname = book.Title() + ".m4b"
+        book.Convert(bname)
 
-        print("audiobook saved to book.m4b")
+        print(f"audiobook saved to \"{bname}\"")
 
 if __name__ == "__main__":
     main()
