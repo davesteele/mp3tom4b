@@ -12,10 +12,11 @@ The following are prerequisites:
 * ffmpeg
 * The Python 3 mutagen module
 * MP4Box, from the 'gpac' package
+* mp4chaps, from the mp4v2-utils package
 
-Install the last three with:
+Install the last four with:
 
-    sudo apt-get install ffmpeg python3-mutagen gpac
+    sudo apt-get install ffmpeg python3-mutagen gpac mp4v2-utils
 
 ## Using
 

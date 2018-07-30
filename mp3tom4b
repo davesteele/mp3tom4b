@@ -284,7 +284,7 @@ def main():
         print(f"metadata saved to \"{jname}\"")
 
     elif args.json_file:
-        book = Book(args.json)
+        book = Book(args.json_file)
 
         bname = book.Title() + ".m4b"
         book.Convert(bname)
