@@ -1,0 +1,6 @@
+mp3tom4b (1.0-1) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- David Steele <dsteele@gmail.com>  Tue, 31 Jul 2018 12:31:17 -0400
