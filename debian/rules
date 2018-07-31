@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+export PYBUILD_NAME=mp3tom4b
+export PYBUILD_INSTALL_ARGS=--install-lib=/usr/share/mp3tom4b
+
 %:
 	dh $@ --with python3 --buildsystem=pybuild
 
