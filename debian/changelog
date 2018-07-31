@@ -1,6 +1,5 @@
-mp3tom4b (1.0-1) UNRELEASED; urgency=low
+mp3tom4b (1.0-1) mp3tom4b; urgency=low
 
-  * Initial release. Closes: #nnnn
-    <nnnn is the bug number of your ITP>
+  * Initial release.
 
  -- David Steele <dsteele@gmail.com>  Tue, 31 Jul 2018 12:31:17 -0400
