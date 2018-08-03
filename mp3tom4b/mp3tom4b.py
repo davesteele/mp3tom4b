@@ -40,8 +40,7 @@ class Book():
         for chapDict in jsonDict["chapters"]:
             chapter = Chapter(chapDict['mp3Path'])
 
-            if chapDict['title']:
-                chapter.title = chapDict['title']
+            chapter.title = chapDict['title']
 
             self.chapterList.append(chapter)
 
@@ -93,14 +92,15 @@ class Book():
                 [x.title for x in self.chapterList],
                 [x.duration for x in self.chapterList]):
 
-            seconds = timeStamp
-            hours = int(seconds // 3600)
-            seconds -= hours * 3600
-            minutes = int(seconds // 60)
-            seconds -= minutes * 60
+            if title:
+                seconds = timeStamp
+                hours = int(seconds // 3600)
+                seconds -= hours * 3600
+                minutes = int(seconds // 60)
+                seconds -= minutes * 60
 
-            text += f"CHAPTER{n}={hours}:{minutes}:{seconds:.3f}\n"
-            text += f"CHAPTER{n}NAME={title}\n"
+                text += f"CHAPTER{n}={hours}:{minutes}:{seconds:.3f}\n"
+                text += f"CHAPTER{n}NAME={title}\n"
 
             timeStamp += duration
 
