@@ -1,4 +1,4 @@
 
-import mp3tom4b.mp3tom4b as mm
+import mp3tom4b
 
-mm.main()
+mp3tom4b.main()
