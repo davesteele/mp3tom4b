@@ -33,7 +33,8 @@ Second, edit the JSON file as necessary to add/modify the metadata. Specifically
 * Book "year", the year of publication.
 * Book "coverPath", the path to JPEG or PNG cover art. This can be left blank.
 * Book "author".
-* The "title" of each chapter.
+* The "title" of each chapter. Leave this blank to omit a chapter title for
+a particular MP3 file.
 
 Also, re-sort the chapters, if necessary. Note that JSON is a machine-readable format - be careful with the
 formatting.
