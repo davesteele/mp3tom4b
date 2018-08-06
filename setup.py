@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mp3tom4b",
-    version="1.0",
+    version="1.1",
     author="David Steele",
     author_email="dsteele@gmail.com",
     description="Convert mp3 files to an m4b audiobook",
@@ -16,9 +16,12 @@ setuptools.setup(
     url="https://github.com/davesteele/mp3tom4b",
     python_requires=">=3.6",
     install_requires=["mutagen"],
-    packages=["mp3tom4b"],
+    packages=["mp3tom4b", "rippet"],
     entry_points={
-        "console_scripts": ["mp3tom4b = mp3tom4b.mp3tom4b:main"],
+        "console_scripts": [
+            "mp3tom4b = mp3tom4b.mp3tom4b:main",
+            "rippet = rippet.rippet:main",
+        ],
     },
     classifiers=(
         "Programming Language :: Python :: 3",

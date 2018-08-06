@@ -1,0 +1,4 @@
+
+import rippet
+
+rippet.main()

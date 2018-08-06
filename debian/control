@@ -15,7 +15,13 @@ X-Python3-Version: >= 3.6
 Package: mp3tom4b
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${python3:Depends}, ffmpeg, gpac, mp4v2-utils
+Depends:
+    ${misc:Depends},
+    ${python3:Depends},
+    ffmpeg,
+    gpac,
+    mp4v2-utils,
+    audiotools,
 Description: convert MP3 audio files to an ".m4b" audiobook
  This command-line utility can convert a series of MP3 files
  into an iTunes-compatible audiobook format, with cover art,

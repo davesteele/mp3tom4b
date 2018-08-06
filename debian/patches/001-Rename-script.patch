@@ -1,13 +1,13 @@
-Index: mp3tom4b-1.0/setup.py
-===================================================================
---- mp3tom4b-1.0.orig/setup.py
-+++ mp3tom4b-1.0/setup.py
-@@ -18,7 +18,7 @@ setuptools.setup(
-     install_requires=["mutagen"],
-     packages=["mp3tom4b"],
+--- a/setup.py
++++ b/setup.py
+@@ -19,8 +19,8 @@
+     packages=["mp3tom4b", "rippet"],
      entry_points={
--        "console_scripts": ["mp3tom4b = mp3tom4b.mp3tom4b:main"],
-+        "console_scripts": ["mp3tom4b.cmd = mp3tom4b.mp3tom4b:main"],
+         "console_scripts": [
+-            "mp3tom4b = mp3tom4b.mp3tom4b:main",
+-            "rippet = rippet.rippet:main",
++            "mp3tom4b.cmd = mp3tom4b.mp3tom4b:main",
++            "rippet.cmd = rippet.rippet:main",
+         ],
      },
      classifiers=(
-         "Programming Language :: Python :: 3",

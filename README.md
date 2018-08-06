@@ -1,8 +1,7 @@
 # mp3tom4b
 Convert mp3 files to an m4b audiobook, with metadata
 
-This can be used, in conjunction with a ripper such as [Sound Juicer](https://wiki.gnome.org/Apps/SoundJuicer),
-to convert audiobook CDs to audiobook files.
+This also includes a small CD ripper wrapper, _rippet_, to convert audiobook CDs to audiobook files.
 
 ## Requires
 
@@ -20,7 +19,9 @@ Install the last four with:
 
 ## Using
 
-The conversion is a three-step process. First run the script using the component MP3 files as arguments. This will create a JSON file containing metadata for creating the audiobook file.
+_rippet_ takes a single argument - the audio CD disk number. It creates MP3 files in the current directory.
+
+The m4b conversion is a three-step process. First run the script using the component MP3 files as arguments. This will create a JSON file containing metadata for creating the audiobook file.
 
     $ mp3tom4b *.mp3
     metadata saved to "James Herriot's Animal Stories.json"
@@ -60,4 +61,16 @@ Finally, run the script with the JSON file as the sole argument. This will creat
     When called with a single argument, mp3tom4b will interpret the
     argument as a JSON metadata file, and will use it to create an
     m4b audio file containing the mp3 file and metadata information.
+
+
+    $ rippet -h
+    usage: rippet [-h] disk_number
+    
+    Parse a CD to sortable tracks
+    
+    positional arguments:
+      disk_number  disk number
+    
+    optional arguments:
+      -h, --help   show this help message and exit
 

@@ -4,7 +4,7 @@
 
 # NAME
 
-**mp3tom4b** -- Convert MP3 audio files to an m4b audiobook
+**mp3tom4b** - Convert MP3 audio files to an m4b audiobook
 
 ## SYNOPSIS
 
@@ -30,6 +30,9 @@ argument as a JSON metadata file, and will use it to create a
 
 ## Options
   **-h**, **--help** - Print help and exit
+
+## See Also
+  **rippet**
 
 ## COPYRIGHT
 
