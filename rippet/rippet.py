@@ -11,7 +11,8 @@ import argparse
 
 def do_rip(disk_num):
     file_fmt = "Disk%(album_number)2.2dTrack%(track_number)2.2d.mp3"
-    cmd = f"cdda2track -t mp3 --album-number {disk_num} --format=\"{file_fmt}\""
+    cmd = f"cdda2track -t mp3 --album-number {disk_num} "\
+          f"--format=\"{file_fmt}\""
     subprocess.call(shlex.split(cmd))
 
 

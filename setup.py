@@ -29,4 +29,3 @@ setuptools.setup(
         "Operating System :: Linux",
     ),
 )
-

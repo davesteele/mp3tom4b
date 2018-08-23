@@ -1,1 +1,1 @@
-from rippet.rippet import *
+from rippet.rippet import *  # noqa

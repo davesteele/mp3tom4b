@@ -88,7 +88,7 @@ class Book():
         timeStamp = 0
 
         for (n, title, duration) in zip(
-                range(1, len(self.chapterList)+1), 
+                range(1, len(self.chapterList)+1),
                 [x.title for x in self.chapterList],
                 [x.duration for x in self.chapterList]):
 
@@ -182,12 +182,12 @@ class AudioManip():
             cmd = f"MP4Box -cat \"{fl}\" \"{tmpOut}\""
             self.run(cmd)
 
-        cmd = f"MP4Box -add \"{tmpOut}\" -chap \"{chapterFile}\" \"{outputFile}\""
+        cmd = f"MP4Box -add \"{tmpOut}\" -chap \"{chapterFile}\" "\
+              f"\"{outputFile}\""
         self.run(cmd)
 
         cmd = f"mp4chaps --convert -Q \"{outputFile}\""
         self.run(cmd)
-
 
     def SetTags(self, outputFile, title, author, year):
         muMp4 = MP4(outputFile)
@@ -258,14 +258,6 @@ def parseArgs():
     return args
 
 
-def check_file(parser, path):
-    if not isfile(path) or not access(path, R_OK):
-
-        parser.print_usage()
-        print("{0}: error: {1} not readable".format(sys.argv[0], path))
-        sys.exit(1)
-
-
 def main():
 
     args = parseArgs()
@@ -290,6 +282,7 @@ def main():
         book.Convert(bname)
 
         print(f"audiobook saved to \"{bname}\"")
+
 
 if __name__ == "__main__":
     main()
