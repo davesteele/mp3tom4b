@@ -12,10 +12,11 @@ The following are prerequisites:
 * The Python 3 mutagen module
 * MP4Box, from the 'gpac' package
 * mp4chaps, from the mp4v2-utils package
+* cdda2track, from the audiotools package
 
-Install the last four with:
+Install the last five with:
 
-    sudo apt-get install ffmpeg python3-mutagen gpac mp4v2-utils
+    sudo apt-get install ffmpeg python3-mutagen gpac mp4v2-utils audiotools
 
 ## Using
 
