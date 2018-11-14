@@ -1,7 +1,7 @@
 # mp3tom4b
 Convert mp3 files to an m4b audiobook, with metadata
 
-This also includes a small CD ripper wrapper, _rippet_, to convert audiobook CDs to audiobook files.
+This also includes a small CD ripper wrapper, _rippet_, to convert audiobook CDs to MP3 files.
 
 ## Requires
 
