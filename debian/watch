@@ -1,9 +1,0 @@
-# You must remove unused comment lines for the released package.
-version=3
-
-opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/mp3tom4b-$1\.tar\.gz/,\
-pgpsigurlmangle=s/github.com/raw.githubusercontent.com/;\
-s/archive\/master/signatures/;\
-s/([^\/]+)\.tar\.gz/mp3tom4b-$1\.tar\.gz/;\
-s/$/.asc/ \
-https://github.com/davesteele/mp3tom4b/tags .*master/v?(\d\S*)\.tar\.gz

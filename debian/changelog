@@ -1,3 +1,9 @@
+mp3tom4b (1.2) mp3tom4b; urgency=medium
+
+  * Set version for native.
+
+ -- David Steele <dsteele@gmail.com>  Wed, 27 Feb 2019 23:09:08 -0500
+
 mp3tom4b (1.1-1) mp3tom4b; urgency=medium
 
   * Add the rippet CD ripper script.
