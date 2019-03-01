@@ -6,7 +6,7 @@ make_index.py </path/to/directory>
 INDEX_TEMPLATE = r"""
 <html>
 <body>
-<h2>Todo.txt-gtd Deb Files</h2>
+<h2>Mp3ToM4b Deb Files</h2>
 <p>
 <ul>
 % for name in names:
