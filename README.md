@@ -18,6 +18,11 @@ Install the last five with:
 
     sudo apt-get install ffmpeg python3-mutagen gpac mp4v2-utils audiotools
 
+Or just install the [deb file](https://davesteele.github.io/mp3tom4b/deb/index.html):
+
+    sudo dpkg -i mp3tom4b*deb
+    sudo apt-get -f install
+
 ## Using
 
 _rippet_ takes a single argument - the audio CD disk number. It creates MP3 files in the current directory.
