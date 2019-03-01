@@ -16,7 +16,7 @@ INDEX_TEMPLATE = r"""
 </p>
 </body>
 </html>
-"""
+"""[1:]
 
 EXCLUDED = ['index.html', 'makeindex.py']
 
