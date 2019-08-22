@@ -197,7 +197,7 @@ class AudioManip():
         muMp4['\xa9ART'] = author
         muMp4['\xa9gen'] = "Audiobook"
         muMp4['\xa9day'] = year
-        muMp4['\xa9too'] = "FAAC 1.28"
+        muMp4['\xa9too'] = "Lavc58.35.100"
 
         muMp4.save()
 
