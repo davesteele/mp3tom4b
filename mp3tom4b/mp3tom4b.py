@@ -16,9 +16,12 @@ import shlex
 import os
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
+from unidecode import unidecode
 
 from os import access, R_OK
 from os.path import isfile
+
+from multiprocessing import Pool
 
 
 class Book():
@@ -31,7 +34,7 @@ class Book():
             self._LoadJson(jsonPath)
 
     def _LoadJson(self, jsonPath):
-        with open(jsonPath, "r") as fp:
+        with open(jsonPath, "r", encoding="utf8") as fp:
             jsonDict = json.load(fp)
 
         [setattr(self, x, jsonDict[x]) for x in jsonDict if x != "chapters"]
@@ -75,13 +78,17 @@ class Book():
 
         morph = AudioManip()
 
-        aacList = [morph.Mp3ToAac(chap.mp3Path) for chap in self.chapterList]
+        with Pool(processes=8) as pool:
+            aacList = pool.map(morph.Mp3ToAac, [chap.mp3Path for chap in self.chapterList], int(len(self.chapterList)/8)+1)
+
 
         morph.ConcatAac(outputFile, aacList, self._ChapterText())
 
         morph.SetTags(outputFile, self.title, self.author, self.year)
 
         morph.SetCover(outputFile, self.coverPath)
+
+        morph.done_with_tmpdir = True
 
     def _ChapterText(self):
         text = ""
@@ -147,11 +154,14 @@ class Chapter():
 class AudioManip():
     def __init__(self):
         self.tmpdir = tempfile.mkdtemp()
+        self.done_with_tmpdir = False
 
     def __del__(self):
-        shutil.rmtree(self.tmpdir)
+        if self.done_with_tmpdir:
+            shutil.rmtree(self.tmpdir)
 
     def run(self, cmd):
+        print(cmd)
         p = subprocess.Popen(
                 shlex.split(cmd),
                 stdout=subprocess.PIPE,
@@ -159,14 +169,16 @@ class AudioManip():
         )
         stdout, stderr = p.communicate()
         if p.returncode != 0:
+            print(p.returncode)
+            print(stdout)
             raise Exception(stderr)
+        print("done")
 
     def Mp3ToAac(self, mp3Path):
-        aacPath = tempfile.mktemp(suffix=".aac", dir=self.tmpdir)
+        aacPath = os.path.join(self.tmpdir, f"{os.path.basename(mp3Path)}.aac")
 
-        cmd = "ffmpeg -i \"{0}\" \"{1}\"".format(mp3Path, aacPath)
+        cmd = "ffmpeg -threads 8 -i \"{0}\" -c:a aac -b:a 64k \"{1}\"".format(mp3Path, aacPath)
         self.run(cmd)
-
         return aacPath
 
     def ConcatAac(self, outputFile, inputFiles, chapterText):
@@ -175,7 +187,7 @@ class AudioManip():
         tmpOut = tempfile.mktemp(suffix=".m4a", dir=self.tmpdir)
 
         chapterFile = tempfile.mktemp(suffix=".chaps", dir=self.tmpdir)
-        with open(chapterFile, "w") as fp:
+        with open(chapterFile, "w", encoding="utf8") as fp:
             fp.write(chapterText)
 
         for fl in inputFiles:
@@ -270,7 +282,7 @@ def main():
 
         jname = book.Title() + ".json"
 
-        with open(jname, "w") as fp:
+        with open(jname, "w", encoding="utf8") as fp:
             fp.write(book.ToJson())
 
         print(f"metadata saved to \"{jname}\"")
@@ -278,7 +290,7 @@ def main():
     elif args.json_file:
         book = Book(args.json_file)
 
-        bname = book.Title() + ".m4b"
+        bname = unidecode(book.Title()) + ".m4b"
         book.Convert(bname)
 
         print(f"audiobook saved to \"{bname}\"")
