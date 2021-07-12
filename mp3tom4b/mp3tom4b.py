@@ -8,14 +8,18 @@
 import argparse
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
 import sys
 import tempfile
 import textwrap
+import xml.etree.ElementTree as ET
 from os import R_OK, access
 from os.path import isfile
+from pathlib import Path
+from xml.dom import minidom
 
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
@@ -27,6 +31,9 @@ class Book:
         for tag in ["title", "coverPath", "year", "author"]:
             setattr(self, tag, "")
         self.chapterList = []
+
+        self.rss_link = ""
+        self.rss_desc = ""
 
         if jsonPath:
             self._LoadJson(jsonPath)
@@ -44,6 +51,9 @@ class Book:
             chapter.title = chapDict["title"]
 
             self.chapterList.append(chapter)
+
+        self.rss_link = jsonDict["rss"]["link"]
+        self.rss_desc = jsonDict["rss"]["description"]
 
     def _SetAttrib(self, tag, value):
         if not getattr(self, tag):
@@ -64,11 +74,81 @@ class Book:
         outDict = vars(self).copy()
         del outDict["chapterList"]
 
+        outDict["rss"] = {
+            "link": self.rss_link,
+            "description": self.rss_desc,
+        }
+
         outDict["chapters"] = [vars(x) for x in self.chapterList]
 
         return json.dumps(outDict, indent=2)
 
-    def Convert(self, outputFile):
+    def _format_xml(self, element):
+
+        rough_string = ET.tostring(element)
+        reparsed = minidom.parseString(rough_string)
+        return reparsed.toprettyxml(indent="  ")
+
+    def Convert(self):
+        if self.rss_link or self.rss_desc:
+            self.ConvertRss()
+        else:
+            self.ConvertM4b
+
+    def ConvertRss(self):
+        pass
+        outputFile = unidecode(self.Title()) + ".rss"
+        outputFile = re.sub(" ", "_", outputFile)
+
+        tree = ET.ElementTree("foo")
+        # tree.append(ET.Comment("Created by me"))
+
+        rss = ET.Element("rss")
+        rss.set("version", "2.0")
+
+        tree._setroot(rss)
+
+        channel = ET.SubElement(rss, "channel")
+
+        title = ET.SubElement(channel, "title")
+        title.text = self.title
+
+        link = ET.SubElement(channel, "link")
+        link.text = self.rss_link
+
+        desc = ET.SubElement(channel, "description")
+        desc.text = self.rss_desc
+
+        image = ET.SubElement(channel, "image")
+        iurl = ET.SubElement(image, "url")
+        iurl.text = "http://192.168.200.27:8000/" + self.coverPath
+        ititle = ET.SubElement(image, "title")
+        ititle.text = self.title
+        ilink = ET.SubElement(image, "link")
+        ilink.text = self.rss_link
+
+        for chapter in self.chapterList:
+            item = ET.SubElement(channel, "item")
+            chapter.populate_rss_item(item)
+
+        pretty = self._format_xml(rss)
+        print(pretty)
+
+        print()
+
+        with open(outputFile, "w", encoding="utf-8") as fp:
+            fp.write(pretty)
+
+#         tree.write("/tmp/foo")
+#         print()
+#         with open("/tmp/foo", "r") as fp:
+#             print(fp.read())
+        print(f'audiobook saved to "{outputFile}"')
+
+
+    def ConvertM4b(self):
+        outputFile = unidecode(self.Title()) + ".m4b"
+
         try:
             os.remove(outputFile)
         except OSError:
@@ -83,6 +163,8 @@ class Book:
         morph.SetTags(outputFile, self.title, self.author, self.year)
 
         morph.SetCover(outputFile, self.coverPath)
+
+        print(f'audiobook saved to "{outputFile}"')
 
     def _ChapterText(self):
         text = ""
@@ -144,6 +226,16 @@ class Chapter:
 
     def Year(self):
         return self._GetTag("TORY")
+
+    def populate_rss_item(self, item):
+        title = ET.SubElement(item, "title")
+        title.text = self.title
+
+        enclosure = ET.SubElement(item, "enclosure")
+
+        enclosure.set("url", "http://192.168.200.27:8000/" + self.mp3Path)
+        enclosure.set("length", str(Path(self.mp3Path).stat().st_size))
+        enclosure.set("type", "audio/mpeg")
 
 
 class AudioManip:
@@ -282,10 +374,8 @@ def main():
     elif args.json_file:
         book = Book(args.json_file)
 
-        bname = unidecode(book.Title()) + ".m4b"
-        book.Convert(bname)
+        book.Convert()
 
-        print(f'audiobook saved to "{bname}"')
 
 
 if __name__ == "__main__":
