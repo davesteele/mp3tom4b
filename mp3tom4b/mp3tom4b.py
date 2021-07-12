@@ -5,26 +5,26 @@
 # License-Filename: LICENSE
 
 
-import sys
-import json
 import argparse
-import textwrap
-import tempfile
+import json
+import os
+import shlex
 import shutil
 import subprocess
-import shlex
-import os
+import sys
+import tempfile
+import textwrap
+from os import R_OK, access
+from os.path import isfile
+
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
 from unidecode import unidecode
 
-from os import access, R_OK
-from os.path import isfile
 
-
-class Book():
+class Book:
     def __init__(self, jsonPath=None):
-        for tag in ['title', 'coverPath', 'year', 'author']:
+        for tag in ["title", "coverPath", "year", "author"]:
             setattr(self, tag, "")
         self.chapterList = []
 
@@ -39,9 +39,9 @@ class Book():
 
         self.chapterList = []
         for chapDict in jsonDict["chapters"]:
-            chapter = Chapter(chapDict['mp3Path'])
+            chapter = Chapter(chapDict["mp3Path"])
 
-            chapter.title = chapDict['title']
+            chapter.title = chapDict["title"]
 
             self.chapterList.append(chapter)
 
@@ -53,9 +53,9 @@ class Book():
         chapter = Chapter(path)
         self.chapterList.append(chapter)
 
-        self._SetAttrib('title', chapter.BookTitle())
-        self._SetAttrib('author', chapter.Author())
-        self._SetAttrib('year', chapter.Year())
+        self._SetAttrib("title", chapter.BookTitle())
+        self._SetAttrib("author", chapter.Author())
+        self._SetAttrib("year", chapter.Year())
 
         if not chapter.title:
             chapter.title = "Chapter {}".format(len(self.chapterList))
@@ -89,9 +89,10 @@ class Book():
         timeStamp = 0
 
         for (n, title, duration) in zip(
-                range(1, len(self.chapterList)+1),
-                [x.title for x in self.chapterList],
-                [x.duration for x in self.chapterList]):
+            range(1, len(self.chapterList) + 1),
+            [x.title for x in self.chapterList],
+            [x.duration for x in self.chapterList],
+        ):
 
             if title:
                 seconds = timeStamp
@@ -114,7 +115,7 @@ class Book():
         return "book"
 
 
-class Chapter():
+class Chapter:
     def __init__(self, mp3Path, **kwargs):
         self.mp3Path = mp3Path
 
@@ -123,7 +124,7 @@ class Chapter():
 
         mp3 = MP3(self.mp3Path)
         self.duration = mp3.info.length
-        self.title = self._GetTag('TIT2')
+        self.title = self._GetTag("TIT2")
 
     def _GetTag(self, tag):
         mp3 = MP3(self.mp3Path)
@@ -136,16 +137,16 @@ class Chapter():
         return val
 
     def BookTitle(self):
-        return self._GetTag('TALB')
+        return self._GetTag("TALB")
 
     def Author(self):
-        return self._GetTag('TPE1')
+        return self._GetTag("TPE1")
 
     def Year(self):
-        return self._GetTag('TORY')
+        return self._GetTag("TORY")
 
 
-class AudioManip():
+class AudioManip:
     def __init__(self):
         self.tmpdir = tempfile.mkdtemp()
 
@@ -154,9 +155,7 @@ class AudioManip():
 
     def run(self, cmd):
         p = subprocess.Popen(
-                shlex.split(cmd),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+            shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         stdout, stderr = p.communicate()
         if p.returncode != 0:
@@ -165,7 +164,9 @@ class AudioManip():
     def Mp3ToAac(self, mp3Path):
         aacPath = os.path.join(self.tmpdir, f"{os.path.basename(mp3Path)}.aac")
 
-        cmd = "ffmpeg -threads 8 -i \"{0}\" -c:a aac -b:a 64k \"{1}\"".format(mp3Path, aacPath)
+        cmd = 'ffmpeg -threads 8 -i "{0}" -c:a aac -b:a 64k "{1}"'.format(
+            mp3Path, aacPath
+        )
         self.run(cmd)
         return aacPath
 
@@ -179,25 +180,26 @@ class AudioManip():
             fp.write(chapterText)
 
         for fl in inputFiles:
-            cmd = f"MP4Box -cat \"{fl}\" \"{tmpOut}\""
+            cmd = f'MP4Box -cat "{fl}" "{tmpOut}"'
             self.run(cmd)
 
-        cmd = f"MP4Box -add \"{tmpOut}\" -chap \"{chapterFile}\" "\
-              f"\"{outputFile}\""
+        cmd = (
+            f'MP4Box -add "{tmpOut}" -chap "{chapterFile}" ' f'"{outputFile}"'
+        )
         self.run(cmd)
 
-        cmd = f"mp4chaps --convert -Q \"{outputFile}\""
+        cmd = f'mp4chaps --convert -Q "{outputFile}"'
         self.run(cmd)
 
     def SetTags(self, outputFile, title, author, year):
         muMp4 = MP4(outputFile)
 
-        muMp4['\xa9nam'] = title
-        muMp4['\xa9alb'] = title
-        muMp4['\xa9ART'] = author
-        muMp4['\xa9gen'] = "Audiobook"
-        muMp4['\xa9day'] = year
-        muMp4['\xa9too'] = "Lavc58.35.100"
+        muMp4["\xa9nam"] = title
+        muMp4["\xa9alb"] = title
+        muMp4["\xa9ART"] = author
+        muMp4["\xa9gen"] = "Audiobook"
+        muMp4["\xa9day"] = year
+        muMp4["\xa9too"] = "Lavc58.35.100"
 
         muMp4.save()
 
@@ -205,10 +207,10 @@ class AudioManip():
         # https://stackoverflow.com/questions/7275710/mutagen-how-to-detect-and-embed-album-art-in-mp3-flac-and-mp4
         if coverPath:
             audio = MP4(outputFile)
-            data = open(coverPath, 'rb').read()
+            data = open(coverPath, "rb").read()
 
             covr = []
-            if coverPath.endswith('png'):
+            if coverPath.endswith("png"):
                 covr.append(MP4Cover(data, MP4Cover.FORMAT_PNG))
             else:
                 covr.append(MP4Cover(data, MP4Cover.FORMAT_JPEG))
@@ -220,7 +222,8 @@ class AudioManip():
 def parseArgs():
     parser = argparse.ArgumentParser(
         description="Convert mp3 audio files to an m4b audiobook",
-        epilog=textwrap.dedent("""
+        epilog=textwrap.dedent(
+            """
             When called with an argument list of mp3 files, %(prog)s will
             create a JSON file containing metadata for the collection.
 
@@ -229,7 +232,8 @@ def parseArgs():
             When called with a single argument, %(prog)s will interpret the
             argument as a JSON metadata file, and will use it to create an
             m4b audio file containing the mp3 file and metadata information.
-            """)[1:-1],
+            """
+        )[1:-1],
         usage="%(prog)s [-h | <MP3 file> <MP3 file> [...] | <JSON file>]",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -273,7 +277,7 @@ def main():
         with open(jname, "w", encoding="utf8") as fp:
             fp.write(book.ToJson())
 
-        print(f"metadata saved to \"{jname}\"")
+        print(f'metadata saved to "{jname}"')
 
     elif args.json_file:
         book = Book(args.json_file)
@@ -281,7 +285,7 @@ def main():
         bname = unidecode(book.Title()) + ".m4b"
         book.Convert(bname)
 
-        print(f"audiobook saved to \"{bname}\"")
+        print(f'audiobook saved to "{bname}"')
 
 
 if __name__ == "__main__":
