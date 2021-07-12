@@ -76,7 +76,7 @@ class Book():
 
         morph = AudioManip()
 
-        aacList = [morph.Mp3ToAac(chap.mp3Path) for chap in self.chapterList]
+        aacList = (morph.Mp3ToAac(chap.mp3Path) for chap in self.chapterList)
 
         morph.ConcatAac(outputFile, aacList, self._ChapterText())
 
