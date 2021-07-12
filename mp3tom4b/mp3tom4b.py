@@ -21,8 +21,6 @@ from unidecode import unidecode
 from os import access, R_OK
 from os.path import isfile
 
-from multiprocessing import Pool
-
 
 class Book():
     def __init__(self, jsonPath=None):
@@ -78,17 +76,13 @@ class Book():
 
         morph = AudioManip()
 
-        with Pool(processes=8) as pool:
-            aacList = pool.map(morph.Mp3ToAac, [chap.mp3Path for chap in self.chapterList], int(len(self.chapterList)/8)+1)
-
+        aacList = [morph.Mp3ToAac(chap.mp3Path) for chap in self.chapterList]
 
         morph.ConcatAac(outputFile, aacList, self._ChapterText())
 
         morph.SetTags(outputFile, self.title, self.author, self.year)
 
         morph.SetCover(outputFile, self.coverPath)
-
-        morph.done_with_tmpdir = True
 
     def _ChapterText(self):
         text = ""
@@ -154,14 +148,11 @@ class Chapter():
 class AudioManip():
     def __init__(self):
         self.tmpdir = tempfile.mkdtemp()
-        self.done_with_tmpdir = False
 
     def __del__(self):
-        if self.done_with_tmpdir:
-            shutil.rmtree(self.tmpdir)
+        shutil.rmtree(self.tmpdir)
 
     def run(self, cmd):
-        print(cmd)
         p = subprocess.Popen(
                 shlex.split(cmd),
                 stdout=subprocess.PIPE,
@@ -169,10 +160,7 @@ class AudioManip():
         )
         stdout, stderr = p.communicate()
         if p.returncode != 0:
-            print(p.returncode)
-            print(stdout)
             raise Exception(stderr)
-        print("done")
 
     def Mp3ToAac(self, mp3Path):
         aacPath = os.path.join(self.tmpdir, f"{os.path.basename(mp3Path)}.aac")
